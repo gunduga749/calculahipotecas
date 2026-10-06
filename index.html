@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><title>Simulador de hipoteca</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef3f5;--card:#fff;--ink:#12212b;--mut:#5b6b76;--line:#d9e2e7;--cap:#0f766e;--int:#f08a24;--vin:#6d5be8;--com:#9aa7b0;--ok:#157f4b;--bad:#c2410c;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d171d;--card:#15232b;--ink:#e8f0f3;--mut:#9db0ba;--line:#26383f;--cap:#2cb9ad;--int:#ffa94d;--vin:#9a8cff;--com:#6f808a;--ok:#4ade80;--bad:#fb923c}}
+:root[data-theme="dark"]{--bg:#0d171d;--card:#15232b;--ink:#e8f0f3;--mut:#9db0ba;--line:#26383f;--cap:#2cb9ad;--int:#ffa94d;--vin:#9a8cff;--com:#6f808a;--ok:#4ade80;--bad:#fb923c}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.5 Manrope,system-ui,sans-serif;font-variant-numeric:tabular-nums}
+.wrap{max-width:1180px;margin:auto;padding:20px 16px 48px}
+h1{font-size:28px;margin:0 0 4px;font-weight:800}h2{font-size:17px;margin:0 0 12px;font-weight:800}p{margin:0}.mut{color:var(--mut)}
+.grid{display:grid;grid-template-columns:340px 1fr;gap:16px;margin-top:18px}@media(max-width:860px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:16px}
+label.f{display:block;font-weight:600;margin:12px 0 4px}.big{font-size:30px;font-weight:800}
+input[type=range]{width:100%;accent-color:var(--cap)}
+input[type=number],input[type=text]{width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+.seg{display:flex;gap:6px}.seg button{flex:1;padding:9px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink);font:600 15px Manrope;cursor:pointer}.seg button.on{background:var(--cap);border-color:var(--cap);color:#fff}
+button:focus-visible,input:focus-visible{outline:2px solid var(--vin);outline-offset:2px}
+.prod{display:grid;grid-template-columns:20px 1fr 62px 66px 24px;gap:6px;align-items:center;margin-bottom:7px}.prod small{grid-column:2/5;color:var(--mut);margin-top:-4px;font-size:12px}
+.prod button{border:0;background:none;color:var(--mut);font-size:18px;cursor:pointer}
+.hd{display:grid;grid-template-columns:20px 1fr 62px 66px 24px;gap:6px;font-size:12px;color:var(--mut)}
+.add{margin-top:6px;border:1px dashed var(--line);background:none;color:var(--ink);padding:7px;border-radius:8px;width:100%;cursor:pointer;font:600 14px Manrope}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:560px){.two{grid-template-columns:1fr}}
+.sc{border:2px solid var(--line);border-radius:12px;padding:14px;position:relative}.sc.win{border-color:var(--ok)}
+.sc h3{margin:0 0 8px;font-size:15px}.tag{position:absolute;top:-11px;right:12px;background:var(--ok);color:#fff;font-size:12px;font-weight:800;padding:2px 10px;border-radius:99px}
+.kv{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--line)}.kv:last-child{border:0}.kv b{font-weight:800}
+.verdict{padding:14px;border-radius:12px;font-weight:600;margin-bottom:16px;border:1px solid var(--line)}.verdict.ok{background:color-mix(in srgb,var(--ok) 14%,var(--card));border-color:var(--ok)}.verdict.bad{background:color-mix(in srgb,var(--bad) 14%,var(--card));border-color:var(--bad)}
+.bar{display:flex;height:30px;border-radius:8px;overflow:hidden;background:var(--line)}.bar i{display:block;height:100%}
+.leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;margin-top:8px}.leg span:before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;background:var(--c)}
+.tabs{display:flex;gap:6px;margin-bottom:10px}.tabs button{padding:6px 12px;border:1px solid var(--line);border-radius:99px;background:var(--bg);color:var(--ink);font:600 13px Manrope;cursor:pointer}.tabs button.on{background:var(--ink);color:var(--bg)}
+.donutrow{display:flex;gap:20px;align-items:center;flex-wrap:wrap}.donutrow svg{width:190px;flex:none}
+.scroll{overflow-x:auto;max-height:300px;overflow-y:auto}table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:5px 8px;text-align:right;border-bottom:1px solid var(--line)}th:first-child,td:first-child{text-align:left}th{position:sticky;top:0;background:var(--card)}
+.def{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}.def div{border-left:4px solid var(--c);padding-left:10px}.def b{display:block}
+svg text{fill:var(--mut);font:11px Manrope}
+</style></head><body><div class="wrap">
+<h1>Simulador de hipoteca</h1>
+<p class="mut">Ajusta el importe, el plazo y las bonificaciones: compara en un vistazo cuánto pagas de verdad con y sin bonificar.</p>
+<div class="grid"><div>
+ <div class="card"><h2>Tu hipoteca</h2>
+  <label class="f" for="imp">Importe financiado</label><div class="big" id="impv"></div><input type="range" id="imp">
+  <label class="f">Años a financiar</label><div class="seg" id="yrs"></div>
+  <label class="f" for="tin">TIN base sin bonificar (%)</label><input type="number" id="tin" step="0.05">
+  <label class="f" for="com">Comisión de apertura (%)</label><input type="number" id="com" step="0.05">
+ </div>
+ <div class="card"><h2>Bonificaciones y sus gastos</h2>
+  <p class="mut" style="font-size:13px;margin-bottom:8px">Marca las que contratarías. Cada una baja el TIN (puntos porcentuales) pero puede costarte dinero cada año. Todo es editable.</p>
+  <div class="hd"><span></span><span>Producto</span><span>Baja TIN</span><span>€/año</span><span></span></div><div id="prods"></div>
+  <button class="add" id="add">+ Añadir producto</button>
+ </div>
+</div><div>
+ <div id="verdict"></div>
+ <div class="card"><h2>Comparador</h2><div class="two" id="cmp"></div></div>
+ <div class="card"><h2>¿Dónde va tu dinero?</h2><div id="bars"></div></div>
+ <div class="card"><h2>Detalle por plazos</h2><div class="tabs" id="tabs"></div><div class="donutrow"><div id="donut"></div><div style="flex:1;min-width:260px"><div id="chart"></div></div></div>
+  <details style="margin-top:12px"><summary style="cursor:pointer;font-weight:600">Ver tabla año a año</summary><div class="scroll" id="tbl"></div></details></div>
+ <div class="card"><h2>Conceptos clave</h2><div class="def">
+  <div style="--c:var(--int)"><b>TIN</b><span class="mut">Tipo de interés nominal: lo que cobra el banco por el dinero prestado. Es el que determina la cuota.</span></div>
+  <div style="--c:var(--vin)"><b>TAE</b><span class="mut">Coste real anual: suma al TIN la comisión de apertura y los gastos de los productos vinculados. Sirve para comparar ofertas.</span></div>
+  <div style="--c:var(--cap)"><b>Cuota y plazo</b><span class="mut">Cuota fija mensual (sistema francés). Al principio casi todo son intereses; al final, casi todo capital.</span></div>
+  <div style="--c:var(--com)"><b>Bonificación</b><span class="mut">Descuento en el TIN a cambio de contratar productos. Compensa solo si el ahorro en intereses supera lo que te cuestan.</span></div>
+ </div></div>
+</div></div></div>
+<script>
+// ====== PARÁMETROS (edita aquí los valores por defecto) ======
+const CFG={importe:{min:50,max:200,step:5,def:150},plazos:[20,25,30],plazoDef:25,tinBase:3.2,comision:0.3,
+ productos:[{n:"Nómina domiciliada",d:0.30,c:0,on:1},{n:"Seguro de hogar",d:0.15,c:250,on:1},{n:"Seguro de vida",d:0.25,c:300,on:1},{n:"Plan de pensiones",d:0.10,c:360,on:0}]};
+// =============================================================
+const $=s=>document.querySelector(s),eur=n=>Math.round(n).toLocaleString('es-ES')+' €',pc=n=>n.toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+' %';
+let years=CFG.plazoDef,view='B';
+const imp=$('#imp');imp.min=CFG.importe.min;imp.max=CFG.importe.max;imp.step=CFG.importe.step;imp.value=CFG.importe.def;
+$('#tin').value=CFG.tinBase;$('#com').value=CFG.comision;
+$('#yrs').innerHTML=CFG.plazos.map(y=>`<button data-y="${y}">${y} años</button>`).join('');
+function prodRow(p){const d=document.createElement('div');d.className='prod';d.innerHTML=`<input type="checkbox" ${p.on?'checked':''} aria-label="Contratar"><input type="text" value="${p.n}"><input type="number" step="0.05" min="0" value="${p.d}"><input type="number" step="10" min="0" value="${p.c}"><button title="Quitar">×</button>`;return d}
+const P=$('#prods');CFG.productos.forEach(p=>P.append(prodRow(p)));
+$('#add').onclick=()=>{P.append(prodRow({n:"Nuevo producto",d:0.1,c:0,on:1}));go()};
+P.onclick=e=>{if(e.target.tagName=='BUTTON'){e.target.parentNode.remove();go()}};
+document.addEventListener('input',go);
+$('#yrs').onclick=e=>{if(e.target.dataset.y){years=+e.target.dataset.y;go()}};
+$('#tabs').onclick=e=>{if(e.target.dataset.v){view=e.target.dataset.v;go()}};
+function calc(Pr,y,tin,com,annual){const n=y*12,i=tin/1200,q=i?Pr*i/(1-Math.pow(1+i,-n)):Pr/n;let b=Pr,rows=[],ci=0,cc=0;
+ for(let m=1;m<=n;m++){const it=b*i,cp=q-it;b-=cp;ci+=it;cc+=cp;if(m%12==0){rows.push({y:m/12,cap:cc,int:ci,bal:Math.max(b,0)});ci=0;cc=0}}
+ const int=q*n-Pr,comm=Pr*com/100,costs=annual*y,net=Pr-comm,pay=q+annual/12;let lo=0,hi=.05;
+ for(let k=0;k<80;k++){const r=(lo+hi)/2,pv=pay*(1-Math.pow(1+r,-n))/r;pv>net?lo=r:hi=r}
+ return{q,n,int,comm,costs,tin,tae:(Math.pow(1+lo,12)-1)*100,total:Pr+int+comm+costs,rows,Pr,annual}}
+function go(){
+ const Pr=+imp.value*1000;$('#impv').textContent=eur(Pr);
+ document.querySelectorAll('#yrs button').forEach(b=>b.classList.toggle('on',+b.dataset.y==years));
+ const tin=+$('#tin').value||0,com=+$('#com').value||0;let dd=0,cc=0,names=[];
+ [...P.children].forEach(r=>{const x=r.querySelectorAll('input');if(x[0].checked){dd+=+x[2].value||0;cc+=+x[3].value||0;names.push(x[1].value)}});
+ const A=calc(Pr,years,tin,com,0),B=calc(Pr,years,Math.max(0,tin-dd),com,cc),sv=A.total-B.total,svInt=A.int-B.int;
+ $('#verdict').innerHTML=sv>0?`<div class="verdict ok">✅ Bonificar te ahorra <b>${eur(sv)}</b> en total: ${eur(svInt)} menos de intereses frente a ${eur(B.costs)} de gastos de los productos.</div>`:
+ `<div class="verdict bad">⚠️ Con estos datos bonificar te cuesta <b>${eur(-sv)}</b> más: ahorras ${eur(svInt)} en intereses pero gastas ${eur(B.costs)} en productos. Compensa más no bonificar.</div>`;
+ const card=(t,S,w)=>`<div class="sc ${w?'win':''}">${w?'<span class="tag">Más barata</span>':''}<h3>${t}</h3>
+ <div class="kv"><span>TIN</span><b>${pc(S.tin)}</b></div><div class="kv"><span>TAE</span><b>${pc(S.tae)}</b></div>
+ <div class="kv"><span>Cuota mensual</span><b>${eur(S.q)}</b></div><div class="kv"><span>Nº de cuotas</span><b>${S.n} (${years} años)</b></div>
+ <div class="kv"><span>Intereses totales</span><b style="color:var(--int)">${eur(S.int)}</b></div>
+ <div class="kv"><span>Gastos de productos</span><b style="color:var(--vin)">${eur(S.costs)}</b></div>
+ <div class="kv"><span>Comisión apertura</span><b>${eur(S.comm)}</b></div>
+ <div class="kv"><span>Coste total pagado</span><b>${eur(S.total)}</b></div>
+ <div class="kv"><span>Por cada 1 € prestado pagas</span><b>${(S.total/S.Pr).toLocaleString('es-ES',{maximumFractionDigits:2})} €</b></div></div>`;
+ $('#cmp').innerHTML=card('Sin bonificar',A,sv<=0)+card('Bonificada'+(names.length?'':' (sin productos)'),B,sv>0);
+ const mx=Math.max(A.total,B.total),seg=(S,l)=>{const w=v=>(v/mx*100).toFixed(2)+'%';return`<p style="font-weight:600;margin:10px 0 4px">${l} <span class="mut">· ${eur(S.total)}</span></p><div class="bar"><i style="width:${w(S.Pr)};background:var(--cap)"></i><i style="width:${w(S.int)};background:var(--int)"></i><i style="width:${w(S.costs)};background:var(--vin)"></i><i style="width:${w(S.comm)};background:var(--com)"></i></div>`};
+ $('#bars').innerHTML=seg(A,'Sin bonificar')+seg(B,'Bonificada')+`<div class="leg"><span style="--c:var(--cap)">Capital</span><span style="--c:var(--int)">Intereses</span><span style="--c:var(--vin)">Gastos de productos</span><span style="--c:var(--com)">Comisión</span></div>`;
+ $('#tabs').innerHTML=`<button data-v="A" class="${view=='A'?'on':''}">Sin bonificar</button><button data-v="B" class="${view=='B'?'on':''}">Bonificada</button>`;
+ const S=view=='A'?A:B,parts=[[S.Pr,'--cap'],[S.int,'--int'],[S.costs,'--vin'],[S.comm,'--com']];let off=25,ds='';
+ parts.forEach(([v,c])=>{const l=v/S.total*100;ds+=`<circle cx="21" cy="21" r="15.9155" fill="none" stroke="var(${c})" stroke-width="6" stroke-dasharray="${l} ${100-l}" stroke-dashoffset="${off}"/>`;off-=l});
+ $('#donut').innerHTML=`<svg viewBox="0 0 42 42">${ds}<text x="21" y="20" text-anchor="middle" style="font-size:3.4px;font-weight:800;fill:var(--ink)">${Math.round(S.int/S.total*100)} %</text><text x="21" y="25" text-anchor="middle" style="font-size:2.6px">son intereses</text></svg>`;
+ const W=560,H=220,pad=30,mq=Math.max(...[A,B].flatMap(s=>s.rows.map(r=>r.cap+r.int))),bw=(W-pad)/S.rows.length;let g='';
+ S.rows.forEach((r,k)=>{const x=pad+k*bw,hc=r.cap/mq*(H-40),hi=r.int/mq*(H-40);
+  g+=`<rect x="${x+1}" y="${H-20-hc}" width="${bw-2}" height="${hc}" fill="var(--cap)"/><rect x="${x+1}" y="${H-20-hc-hi}" width="${bw-2}" height="${hi}" fill="var(--int)"/>`;
+  if(r.y%5==0||k==0)g+=`<text x="${x+bw/2}" y="${H-6}" text-anchor="middle">${r.y}</text>`});
+ $('#chart').innerHTML=`<p class="mut" style="font-size:13px">Cada año: parte de capital y de intereses (año 1 → ${years}). Al inicio pagas sobre todo intereses.</p><svg viewBox="0 0 ${W} ${H}"><text x="0" y="12">${eur(mq)}</text>${g}</svg>`;
+ $('#tbl').innerHTML=`<table><tr><th>Año</th><th>Capital</th><th>Intereses</th><th>Pendiente</th></tr>${S.rows.map(r=>`<tr><td>${r.y}</td><td>${eur(r.cap)}</td><td>${eur(r.int)}</td><td>${eur(r.bal)}</td></tr>`).join('')}</table>`;
+}
+go();
+</script></body></html>
